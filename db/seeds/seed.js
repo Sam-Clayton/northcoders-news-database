@@ -59,10 +59,10 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     votes, author, created_at)
     VALUES %L RETURNING *`;
 
-    const preparedComments = commentData.map(({article_id, body, 
+    const preparedComments = commentData.map(({article_title, body, 
     votes, author, created_at}) => {
       return [
-        ref[article_id], 
+        ref[article_title], 
         body, 
         votes, 
         author, 
