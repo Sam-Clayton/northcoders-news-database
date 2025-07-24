@@ -83,3 +83,39 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id", () => {
+  test("200: Responds with matching article object", () => {
+    return request(app)
+      .get("/api/articles/5")
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article.author).toBe("rogersop"),
+        expect(article.title).toBe("UNCOVERED: catspiracy to bring down democracy")
+        expect(article.article_id).toBe(5)
+        expect(article.body).toBe("Bastet walks amongst us, and the cats are taking arms!")
+        expect(article.topic).toBe("cats")
+        expect(article.created_at).toEqual("2020-08-03T13:14:00.000Z")
+        expect(article.votes).toBe(0)
+        expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+      })
+  });
+
+  test("400: Responds with 400 error when the requested path is in the wrong format", () => {
+    return request(app)
+      .get("/api/articles/not-correct-id-input")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request")
+      })
+  });
+  test("404: Responds with 404 error when the requested path doesn\'t exist", () => {
+    return request(app)
+      .get("/api/articles/12345")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found")
+      })
+  });
+})
