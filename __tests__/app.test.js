@@ -30,15 +30,38 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body: { topics } }) => {
-        console.log({topics}, '<<<<<')
         expect(topics).toHaveLength(3);
-        topics.forEach((topic) => {
-          expect(topic).toMatchObject({
-            slug: expect.any(String),
-            description: expect.any(String),
-            img_url: expect.any(String)
+        topics.forEach((topicProperty) => {
+          expect(topicProperty).toMatchObject({
+            slug:         expect.any(String),
+            description:  expect.any(String),
+            img_url:      expect.any(String)
           })
         })
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("200: Responds with article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toHaveLength(13);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author:           expect.any(String),
+            title:            expect.any(String),
+            article_id:       expect.any(Number),
+            topic:            expect.any(String),
+            created_at:       expect.any(String),
+            votes:            expect.any(Number),
+            article_img_url:  expect.any(String),
+            comment_count:    expect.any(String),
+          })
+        })
+
       });
   });
 });
