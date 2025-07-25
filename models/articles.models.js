@@ -17,9 +17,10 @@ function fetchArticleById(article_id) {
     .then(({ rows }) => {
         
         if (rows.length === 0) {
-            return Promise.reject({ status: 404, msg: 'Article not found'})
+            return Promise.reject({ status: 404, msg: 'Path not found'})
         }
-    const article = rows[0]   
+    const article = rows[0]
+
     return article
     })
 };

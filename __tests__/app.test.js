@@ -115,7 +115,45 @@ describe("GET /api/articles/:article_id", () => {
       .get("/api/articles/12345")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Article not found")
+        expect(body.msg).toBe("Path not found")
       })
   });
 })
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with matching comments of the correct article", () => {
+    return request(app)
+      .get('/api/articles/3/comments')
+      .expect(200)
+      .then(({body: {comments}}) => {
+        expect(comments).toHaveLength(2);
+        comments.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          })
+        })
+      })
+  });
+  test("400: Responds with 400 error when the requested path is in the wrong format", () => {
+    return request(app)
+      .get("/api/articles/not-a-number/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request")
+      })
+  });
+   test("404: Responds with 404 error when the requested path doesn\'t exist", () => {
+    return request(app)
+      .get("/api/articles/11111/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Path not found")
+      })
+  });
+})
+
