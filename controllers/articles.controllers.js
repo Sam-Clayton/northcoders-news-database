@@ -12,10 +12,10 @@ function getArticleById(req, res, next) {
     return fetchArticleById(article_id)
     .then((article) => {
         res.status(200)
-        res.send({article})
+        .send({article});
     })
     .catch(err => {
-        next(err)
+        next(err);
     })
 }
 

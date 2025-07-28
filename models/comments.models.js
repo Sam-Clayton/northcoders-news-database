@@ -7,9 +7,9 @@ function fetchCommentsOnArticle(article_id) {
         LEFT JOIN articles 
         ON articles.article_id = comments.article_id 
         WHERE comments.article_id = $1
-        ORDER BY comments.created_at
-        ;`, 
-        [article_id])
+        ORDER BY comments.created_at;`,
+        [article_id]
+    )
     .then(({ rows }) => {
         if (rows.length === 0) {
             return Promise.reject({ status: 404, msg: 'Path not found'})
@@ -17,7 +17,33 @@ function fetchCommentsOnArticle(article_id) {
     const comments = rows
 
     return comments;
-    })
-}
+    });
+};
 
-module.exports = {fetchCommentsOnArticle}
+function insertCommentOnArticle(article_id, username, body) {
+    return db.query(`
+        INSERT INTO comments
+            (article_id, author, body)
+        VALUES
+            ($1, $2, $3)
+        RETURNING *`, 
+        [article_id, username, body]
+    )
+    .then(({rows}) => {
+        const comment = rows[0]
+        return comment 
+    })
+    .catch(err => {
+        if (err.code === '23503') {
+            if (err.constraint === 'comments_author_fkey') {
+                return Promise.reject({status: 400, msg: 'Unrecognised username'})
+            }
+            if (err.constraint === 'comments_article_id_fkey') {
+                return Promise.reject({status: 404, msg: 'Article not found'})
+            }
+        };
+        return Promise.reject(err)
+    });
+};
+
+module.exports = {fetchCommentsOnArticle, insertCommentOnArticle}

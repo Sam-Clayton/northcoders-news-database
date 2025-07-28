@@ -58,7 +58,7 @@ describe("GET /api/articles", () => {
             created_at:       expect.any(String),
             votes:            expect.any(Number),
             article_img_url:  expect.any(String),
-            comment_count:    expect.any(String),
+            comment_count:    expect.any(Number),
           })
         })
 
@@ -118,7 +118,7 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Path not found")
       })
   });
-})
+});
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: Responds with matching comments of the correct article", () => {
@@ -155,5 +155,68 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Path not found")
       })
   });
-})
+});
 
+describe("POST /api/articles/:article_id/comments", () => {
+  
+  test("201: Responds with comment made on the correct article", () => {
+    const testComment = {
+      username: 'icellusedkars',
+      body: 'This is a test comment'
+    };
+    return request(app)
+    .post('/api/articles/2/comments')
+    .send(testComment)
+    .expect(201)
+    .then(({body: {postedComment}}) => {
+      expect(postedComment).toMatchObject({
+        body: 'This is a test comment',
+        votes: expect.any(Number),
+        author: 'icellusedkars',
+        created_at: expect.any(String),
+        comment_id: expect.any(Number),
+        article_id: 2,
+      });
+    });
+  });
+  test('400: Responds with 400 error when the requested path is in the wrong format', () => {
+    const testComment = {
+      username: 'icellusedkars',
+      body: 'This is a test comment'
+    };
+    return request(app)
+      .post("/api/articles/not-a-number/comments")
+      .send(testComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request")
+      })
+  });
+  test('400: Responds with 400 error when the request comes from an unrecognised username', () => {
+    const testComment = {
+      username: 'wrongusername',
+      body: 'This is a test comment'
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(testComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Unrecognised username")
+      })
+  });
+  test('404: Responds with 404 error when the requested path is not found', () => {
+    const testComment = {
+      username: 'icellusedkars',
+      body: 'This is a test comment'
+    };
+    return request(app)
+      .post("/api/articles/11123/comments")
+      .send(testComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found")
+      })
+  });
+  
+});
