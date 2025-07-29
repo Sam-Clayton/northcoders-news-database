@@ -220,3 +220,23 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
   
 });
+
+describe.only("PATCH /api/articles/:article_id", () => {
+  const testVoteChange = { inc_votes: 10}
+  test("200: Responds with code 200 and the updated article", () => {
+    return request(app)
+    .patch('/api/articles/3')
+    .send(testVoteChange)
+    .expect(200)
+    .then(({ body: article }) => {
+        expect(article.author).toBe("icellusedkars"),
+        expect(article.title).toBe("Eight pug gifs that remind me of mitch")
+        expect(article.article_id).toBe(3)
+        expect(article.body).toBe("some gifs")
+        expect(article.topic).toBe("mitch")
+        expect(article.created_at).toEqual("2020-11-03T09:12:00.000Z")
+        expect(article.votes).toBe(10)
+        expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+      })
+  });
+});

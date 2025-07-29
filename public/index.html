@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NC News API</title>
+</head>
+<body>
+    <header>
+        <h1>API Guide for NC News</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Our fluffy helper Manx will assist you with any queries.</h2>
+
+            <p>Quick access buttons to the required table</p>
+            <input type="button" class="nav-button" value="Articles" onClick="document.getElementById('articles').scrollIntoView();"/>
+            <input type="button" class="nav-button" value="Comments" onClick="document.getElementById('comments').scrollIntoView();"/>
+            <input type="button" class="nav-button" value="Topics" onClick="document.getElementById('topics').scrollIntoView();"/>
+            <input type="button" class="nav-button" value="Users" onClick="document.getElementById('users').scrollIntoView();"/>
+            <br>
+            <img src="./pics/Assistant.PNG" alt="a black cat leaning on a table looking helpful"/>
+        </section>
+        <section>
+            <h2>What can the database do?</h2>
+            <p>The purpose of NC-News is to set up a backend with an API, that can connect to our frontend for testing and practice purposes.</p>
+            <p>Due to that, not all functionality is currently available and will be added in the future.</p>
+        </section>
+        <section>
+            <h2>Requests Available</h2>
+            <p>So far, there is functionality to get topics, articles and users as full tables. To do this you can call /api/:table_name</p>
+            <p>You can also get a specific article by choosing a number from 1-15, and see comments on that article eg /api/articles/3/comments</p>
+            <p>You can post a comment to a specific article with /api/articles/:article_id/comments. The request will accept an object with keys of username: varchar and body: varchar. Must be a valid username to comment.</p>
+            <p>Patch can be used to change the amount of votes on an article using /api/articles/:article_id. The request will accept an object with a key of inc_votes: INT</p>
+        </section>
+        <section id="articles">
+            <h2>Articles</h2>
+            <p>This table has the following columns:</p>
+            <ol>
+                <li>article_id</li>
+                <li>title</li>
+                <li>topic</li>
+                <li>author</li>
+                <li>body</li>
+                <li>created_at</li>
+                <li>votes</li>
+                <li>article_img_url</li>
+            </ol>
+        </section>
+        <section id="comments">
+            <h2>Comments</h2>
+            <p>This table has the following columns:</p>
+            <ol>
+                <li>comment_id</li>
+                <li>article_id</li>
+                <li>body</li>
+                <li>votes</li>
+                <li>author</li>
+                <li>created_at</li>
+            </ol>
+        </section>
+        <section id="topics">
+            <h2>Topics</h2>
+            <p>This table has the following columns:</p>
+            <ol>
+                <li>description</li>
+                <li>slug</li>
+                <li>img_url</li>
+            </ol>
+        </section>
+        <section id="users">
+            <h2>Users</h2>
+            <p>This table has the following columns:</p>
+            <ol>
+                <li>username</li>
+                <li>name</li>
+                <li>avatar_url</li>
+            </ol>
+        </section>
+        <section>
+            <h2>Error Handling</h2>
+            <p>NC-News uses conventional http error handling and should give a human readable response.</p>
+        </section>
+    </main>
+</body>
+</html>
