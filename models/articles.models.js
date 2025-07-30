@@ -25,7 +25,7 @@ function fetchArticleById(article_id) {
     })
 };
 
-function amendArticleVotes(inc_votes, article_id) {
+function amendArticleVotes(inc_votes, article_id, next) {
     return db.query(`
         UPDATE articles
         SET votes = $1
