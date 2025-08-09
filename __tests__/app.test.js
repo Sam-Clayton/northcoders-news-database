@@ -221,22 +221,59 @@ describe("POST /api/articles/:article_id/comments", () => {
   
 });
 
-describe.only("PATCH /api/articles/:article_id", () => {
-  const testVoteChange = { inc_votes: 10}
+describe("PATCH /api/articles/:article_id", () => {
   test("200: Responds with code 200 and the updated article", () => {
+    const testVoteChange = { inc_votes: 10}
     return request(app)
-    .patch('/api/articles/3')
+    .patch('/api/articles/1')
     .send(testVoteChange)
     .expect(200)
     .then(({ body: article }) => {
-        expect(article.author).toBe("icellusedkars"),
-        expect(article.title).toBe("Eight pug gifs that remind me of mitch")
-        expect(article.article_id).toBe(3)
-        expect(article.body).toBe("some gifs")
+        expect(article.author).toBe("butter_bridge"),
+        expect(article.title).toBe("Living in the shadow of a great man")
+        expect(article.article_id).toBe(1)
+        expect(article.body).toBe("I find this existence challenging")
         expect(article.topic).toBe("mitch")
-        expect(article.created_at).toEqual("2020-11-03T09:12:00.000Z")
-        expect(article.votes).toBe(10)
+        expect(article.created_at).toEqual("2020-07-09T20:11:00.000Z")
+        expect(article.votes).toBe(110)
         expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+      })
+  });
+  test("200: Responds with code 200 and the updated article when given a negative value", () => {
+    const testVoteChange = { inc_votes: -10}
+    return request(app)
+    .patch('/api/articles/1')
+    .send(testVoteChange)
+    .expect(200)
+    .then(({ body: article }) => {
+        expect(article.author).toBe("butter_bridge"),
+        expect(article.title).toBe("Living in the shadow of a great man")
+        expect(article.article_id).toBe(1)
+        expect(article.body).toBe("I find this existence challenging")
+        expect(article.topic).toBe("mitch")
+        expect(article.created_at).toEqual("2020-07-09T20:11:00.000Z")
+        expect(article.votes).toBe(90)
+        expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700")
+      })
+  });
+  test('400: Responds with 400 error when the requested path is in the wrong format', () => {
+    const testVoteChange = { inc_votes: 15 }
+    return request(app)
+      .patch("/api/articles/not-a-number")
+      .send(testVoteChange)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request")
+      })
+  });
+  test('404: Responds with 404 error when the requested article does not exist', () => {
+    const testVoteChange = { inc_votes: 20 }
+    return request(app)
+      .patch("/api/articles/3000")
+      .send(testVoteChange)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found")
       })
   });
 });

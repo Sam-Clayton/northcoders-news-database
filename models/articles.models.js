@@ -28,20 +28,18 @@ function fetchArticleById(article_id) {
 function amendArticleVotes(inc_votes, article_id, next) {
     return db.query(`
         UPDATE articles
-        SET votes = $1
+        SET votes = votes + $1
         WHERE article_id = $2
         RETURNING *`,
         [inc_votes, article_id]
     )
     .then(({rows}) => {
-        console.log(rows[0], '<<<<< ROWS MODEL')
+        if (rows.length === 0) {
+            return Promise.reject({ status: 404, msg: 'Article not found'})
+        }
         const article = rows[0]
 
         return article
-    })
-    .catch(err => {
-        console.log(err, '<<<< MODEL ERR')
-        next(err)
     })
 }
 

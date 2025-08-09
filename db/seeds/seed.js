@@ -73,7 +73,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
 
     return db.query(formattedCommentsQuery);
   })
-  .catch(err => console.log(err, '<<<< ERR'))
+  .catch( err => {})
 };
 
 module.exports = seed;
